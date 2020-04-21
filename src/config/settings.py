@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     # Third party apps
 
     # Project apps
-
+    'materialized_paths',
 ]
 
 MIDDLEWARE = [
