@@ -61,7 +61,7 @@ class Node(models.Model):
 
     @property
     def level(self):
-        return len(self.tree_path.split(conf.PATH_SEPARATOR))
+        return len(self.tree_path.split(conf.PATH_SEPARATOR)) - 1
 
     @staticmethod
     def _add_children(children, node):
