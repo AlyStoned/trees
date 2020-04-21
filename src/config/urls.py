@@ -21,6 +21,9 @@ from config import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('materialized_paths.urls', namespace='materialized_paths')),
+    # path('materialized_paths/', include('materialized_paths.urls', namespace='materialized_paths')),
+    # path('mptt/', include('mptt.urls', namespace='mptt')),
 ]
 
 
