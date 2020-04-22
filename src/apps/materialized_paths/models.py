@@ -11,7 +11,7 @@ class Node(models.Model):
 
     name = models.CharField('name', max_length=255, blank=True)
     sequent = models.PositiveSmallIntegerField(_('sequent'), default=0, editable=False)
-    tree_path = models.TextField(_('branch'), editable=False, db_index=True)
+    tree_path = models.CharField(_('path'), max_length=255, editable=False, db_index=True)
     created_at = models.DateTimeField(_('created date'), default=None, editable=False)
 
     class Meta:
@@ -38,13 +38,9 @@ class Node(models.Model):
             self.sequent = sequent + 1
 
             if self.parent:
-                self.tree_path = '{parent}{separator}{seq}'.format(
-                    parent=self.parent.tree_path,
-                    separator=conf.PATH_SEPARATOR,
-                    seq=self.sequent
-                )
+                self.tree_path = f'{self.parent.tree_path}{conf.PATH_SEPARATOR}{self.sequent:06}'
             else:
-                self.tree_path = str(self.sequent)
+                self.tree_path = f'{self.sequent:06}'
 
         super().save(self, *args, **kwargs)
 
@@ -111,10 +107,10 @@ class Node(models.Model):
         return result
 
     def get_branch(self):
-        nodes = type(self).objects.filter(tree_path__startswith=self.tree_path)
-        parent = self._build_new_dict(nodes[0]) if nodes else None
+        nodes = type(self).objects.filter(tree_path__startswith=self.tree_path + conf.PATH_SEPARATOR)
+        parent = self._build_new_dict(self)
 
-        for node in nodes[1:]:
+        for node in nodes:
             if node.parent_id == parent['id']:
                 child_dict = self._build_new_dict(node)
                 parent['children'].append(child_dict)
